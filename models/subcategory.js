@@ -10,3 +10,5 @@ const SubcategorySchema = new Schema({
 SubcategorySchema.virtual("url").get(function () {
   return `/categories/${this.category}/${this.id}`;
 });
+
+module.exports = mongoose.model("Subcategory", SubcategorySchema);

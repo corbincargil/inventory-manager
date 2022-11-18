@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const ManufacturerSchema = new Schema({
-  name: String,
+  name: { type: String, required: true },
   location: { type: String, required: true },
   founded: { type: Date },
   logo: { type: String },
