@@ -18,4 +18,4 @@ ProductSchema.virtual("url").get(function () {
   return `/products/${this.categoty}/${this.subcategory}/${this.id}`;
 });
 
-module.exports = mongoose.model("Product", ProdcutSchema);
+module.exports = mongoose.model("Product", ProductSchema);
