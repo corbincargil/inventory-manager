@@ -9,7 +9,7 @@ const ManufacturerSchema = new Schema({
   logo: { type: String },
 });
 
-ProductSchema.virtual("url").get(function () {
+ManufacturerSchema.virtual("url").get(function () {
   return `/manufacturers/${this.id}`;
 });
 

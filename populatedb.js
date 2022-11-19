@@ -32,8 +32,8 @@ var subcategories = [];
 
 function manufaturerCreate(name, location, founded, logo, cb) {
   manufacturerDetail = { name: name, location: location };
-  if (founded != false) authordetail.founded = founded;
-  if (logo != false) authordetail.logo = logo;
+  if (founded != false) manufacturerDetail.founded = founded;
+  if (logo != false) manufacturerDetail.logo = logo;
 
   var manufacturer = new Manufacturer(manufacturerDetail);
 
@@ -56,9 +56,9 @@ function categoryCreate(name, cb) {
       cb(err, null);
       return;
     }
-    console.log("New Genre: " + category);
+    console.log("New Category: " + category);
     categories.push(category);
-    cb(null, subcacategorytegory);
+    cb(null, category);
   });
 }
 
@@ -70,19 +70,21 @@ function subcategoryCreate(name, category, cb) {
       cb(err, null);
       return;
     }
-    console.log("New Genre: " + subcategory);
+    console.log("New Subcategory: " + subcategory);
     subcategories.push(subcategory);
     cb(null, category);
+    //need to figure out how to add a subcategory to the subcategories array for its specific category when it is created
+    category.subcategories.push(subcategory);
+    console.log(`${category.name}'s usbcategories: ${category.subcategories}`);
+    console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+    console.log(category.subcategories);
   });
-
-  //need to figure out how to add a subcategory to the subcategories array for its specific category when it is created
-  category.subcategories.push(subcategory);
 }
 
 function productCreate(
   name,
-  descrition,
-  manufaturer,
+  description,
+  manufacturer,
   category,
   subcategory,
   price,
@@ -93,13 +95,13 @@ function productCreate(
 ) {
   productdetail = {
     name: name,
-    manufaturer: manufaturer,
+    manufacturer: manufacturer,
     category: category,
     price: price,
     inStock: inStock,
     qty: qty,
   };
-  if (descrition != false) productdetail.descrition = descrition;
+  if (description != false) productdetail.description = description;
   if (subcategory != false) productdetail.subcategory = subcategory;
   if (pic != false) productdetail.pic = pic;
 
@@ -112,27 +114,6 @@ function productCreate(
     console.log("New Product: " + product);
     products.push(product);
     cb(null, product);
-  });
-}
-
-function bookInstanceCreate(book, imprint, due_back, status, cb) {
-  bookinstancedetail = {
-    book: book,
-    imprint: imprint,
-  };
-  if (due_back != false) bookinstancedetail.due_back = due_back;
-  if (status != false) bookinstancedetail.status = status;
-
-  var bookinstance = new BookInstance(bookinstancedetail);
-  bookinstance.save(function (err) {
-    if (err) {
-      console.log("ERROR CREATING BookInstance: " + bookinstance);
-      cb(err, null);
-      return;
-    }
-    console.log("New BookInstance: " + bookinstance);
-    bookinstances.push(bookinstance);
-    cb(null, book);
   });
 }
 
@@ -170,7 +151,8 @@ function createProducts(cb) {
           499.99,
           false,
           true,
-          10
+          10,
+          callback
         );
       },
     ],
@@ -191,6 +173,27 @@ function createSubcategories(cb) {
   );
 }
 
+// function populateSubcategories(cb) {
+//   async.series(
+//     [
+//       function (cb) {
+//         subcategories.forEach((subcategory) => {
+//           categories.forEach((category) => {
+//             if (subcategory.category === category) {
+//               category.subcategories.push(subcategory);
+//               return;
+//             } else {
+//               cb(null);
+//               return;
+//             }
+//           });
+//         });
+//       },
+//     ],
+//     cb
+//   );
+// }
+
 async.series(
   [createCategoriesManufacturers, createProducts, createSubcategories],
   // Optional callback
@@ -198,7 +201,7 @@ async.series(
     if (err) {
       console.log("FINAL ERR: " + err);
     } else {
-      console.log("BOOKInstances: " + bookinstances);
+      console.log("Subcategoires: " + subcategories);
     }
     // All done, disconnect from database
     mongoose.connection.close();
